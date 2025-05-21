@@ -1,0 +1,44 @@
+.navigationButton {
+    position: relative;
+}
+.button {
+    text-decoration: none;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    user-select: none;
+    padding: 0 10px;
+}
+.button:hover {
+    background-color: #d2cfcf;
+}
+.button:active {
+    background-color: #aeadad;
+}
+.textBlock {
+    display: flex;
+    align-items: center;
+}
+.list {
+    z-index: 999;
+    display: none;
+    border-radius: 5px;
+    border: 1px solid #606060;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px #ccc;
+    user-select: none;
+    position: absolute;
+    white-space: nowrap;
+}
+.list ul {
+    list-style-type: none;
+    padding: 5px 0;
+}
+.list ul li {
+    padding: 3px 20px;
+}
+.list ul li:hover {
+    background-color: #d2cfcf;
+}

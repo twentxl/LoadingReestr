@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
 import { formatDateTime } from "../../../helper/formatting";
-import { Mtr1ResultSchet, Mtr1ExportExcel, DeleteRow } from '../../../api/Mtr1ResultApi';
-import type { Mtr1ResultSchetParams } from '../../../api/Mtr1ResultApi';
+import { Mtr1ResultSchet, Mtr1ExportExcel, DeleteRow, type Mtr1ResultSchetParams } from '../../../api/Mtr1ResultSchetApi';
 import ContextMenu, { ContextMenuItem } from '../../../components/ui/ContextMenu/ContextMenu';
 import Loader from "../../../components/ui/Loader/Loader";
 import { Button } from '@mantine/core';
-import MtrSchetSearchPopup from './MtrSchetSearchPopup/MtrSchetSearchPopup';
+import MtrSchetSearchPopup from './MtrSchetSearchPopup';
 import { IoSearch } from "react-icons/io5";
 import { FcPrint, FcDatabase, FcAnswers, FcUpload, FcList, FcCalendar, FcDataSheet, FcSynchronize, FcKindle, FcFullTrash, FcPlus } from "react-icons/fc";
 
@@ -17,16 +16,15 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
     const [data, setData] = useState<any[]>([]);
     const [selectedRow, setSelectedRow] = useState<any | null>(null);
     const [activeRow, setActiveRow] = useState<any | null>(null);
+    const [ visiblePopup, setVisiblePopup ] = useState<boolean>(true);
+    const [loaderVisible, setLoaderVisible] = useState<boolean>(false);
 
-    const loaderRef = useRef<HTMLDivElement | null>(null);
-    const popupRef = useRef<HTMLDivElement | null>(null);
+
     const contentRef = useRef<HTMLDivElement | null>(null);
     const exportGridRef = useRef<any[]>([]);
 
     const fetchData = useCallback(async (popupValue: any) => {
-        if (loaderRef.current) {
-            loaderRef.current.style.display = "flex";
-        }
+        setLoaderVisible(true);
         try {
             const params: Mtr1ResultSchetParams = {
                 typeIST: typeIST,
@@ -55,38 +53,32 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
             alert(`Ошибка при загрузке данных: ${error}`)
             console.error("Ошибка при загрузке данных", error);
         } finally {
-            if (loaderRef.current) {
-                loaderRef.current.style.display = "none";
-            }
+            setLoaderVisible(false);
         }
     }, [typeIST, setData]);
 
     const searchButton = () => {
-        if(popupRef.current) { popupRef.current.style.display = "flex"; }
+        setVisiblePopup(true);
     };
 
     const resultClick = useCallback((newValue: any) => {
         if(contentRef.current && contentRef.current.style.display === "none") {
             contentRef.current.style.display = "block";
         }
-        if(popupRef.current) { popupRef.current.style.display = "none"; }
+        setVisiblePopup(false);
         fetchData(newValue);
     }, [fetchData]);
 
     const exportExcel = useCallback(async() => {
         try {
-            if (loaderRef.current) {
-                loaderRef.current.style.display = "flex";
-            }
+            setLoaderVisible(true);
             await Mtr1ExportExcel(exportGridRef.current);
         }
         catch(error) {
             console.error(error);
         }
         finally {
-            if (loaderRef.current) {
-                loaderRef.current.style.display = "none";
-            }
+            setLoaderVisible(false);
         }
     }, []);
 
@@ -153,6 +145,7 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
         enableColumnActions: true,
         enableColumnFilters: true,
         enableSorting: true,
+        // enableStickyHeader: true,
         mantineTableProps: {
             withColumnBorders: true,
         },
@@ -173,7 +166,7 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
                 backgroundColor: isActive ? '#dee2e6' : 'inherit',
               },
             };
-          },
+        },
         initialState: {
             pagination: {
                 pageIndex: 0,
@@ -208,10 +201,10 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
             </ContextMenu>
             <div>
                 <Button variant='default' leftIcon={<IoSearch />} onClick={searchButton}>Поиск</Button>
-                <MtrSchetSearchPopup title="Работа со счетами" ref={popupRef} onClick={resultClick}/>
+                <MtrSchetSearchPopup title="Работа со счетами" visible={visiblePopup} onClose={() => setVisiblePopup(false)} onClick={resultClick}/>
             </div>
             <div ref={contentRef}>
-                <Loader ref={loaderRef} />
+                <Loader visible={loaderVisible} />
                 <MantineReactTable table={table} />
             </div>
         </>

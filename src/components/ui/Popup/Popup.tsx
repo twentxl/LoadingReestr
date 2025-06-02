@@ -4,39 +4,37 @@ import style from './Popup.module.css';
 interface PopupProps {
     children: React.ReactNode;
     title: string;
+    visible: boolean;
+    onClose: () => void;
 }
-const Popup = React.forwardRef<HTMLDivElement, PopupProps>(({ children, title }, ref) => {
+const Popup: React.FC<PopupProps> = ({ children, title, visible, onClose }) => {
     const closeRef = useRef<HTMLDivElement | null>(null);
-
-    const closePopup = useCallback(() => {
-        if (ref && typeof ref !== "function" && ref.current) {
-            ref.current.style.display = "none";
-        }
-    }, [ref]);
 
     useEffect(() => {
         const close = closeRef.current;
-        if (close) {
-            close.addEventListener('click', closePopup);
+        if (close && onClose) {
+            close.addEventListener('click', onClose);
         }
         return () => {
-            if (close) {
-                close.removeEventListener('click', closePopup);
+            if (close && onClose) {
+                close.removeEventListener('click', onClose);
             }
         };
-    }, [closePopup]);
+    }, [onClose]);
 
     return (
-        <div className={style.popup} ref={ref}>
+        visible && (
+        <div className={style.popup}>
             <div className={style.wrapper}>
                 <div className={style.header}>
                     <div className={style.title}>{title}</div>
-                    <div className={style.closePopup} ref={closeRef}>✖</div>
+                    <div className={style.closePopup} ref={closeRef} onClick={onClose}>✖</div>
                 </div>
                 <div className={style.content}>{children}</div>
             </div>
         </div>
+        )
     );
-});
+};
 
 export default Popup;

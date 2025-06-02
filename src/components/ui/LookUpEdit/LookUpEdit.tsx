@@ -47,6 +47,7 @@ const LookUpEdit: React.FC<LookUpEditProps> = ({ label, data, width, memoAccesso
         enableColumnFilters: false,
         enablePagination: false,
         enableSorting: false,
+        //enableStickyHeader: true,
         mantineTableBodyRowProps: ({ row }) => ({
             onClick: () => {
               handleRowClick(row);

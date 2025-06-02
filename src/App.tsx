@@ -59,7 +59,7 @@ const App: React.FC = () => {
           ))}
         </Tabs.List>
         {tabs.map((tab) => (
-          <Tabs.Panel key={tab.value} value={tab.value}>
+          <Tabs.Panel key={tab.value} value={tab.value} sx={{ height: '85vh', overflow: 'auto' }}>
             {tab.content}
           </Tabs.Panel>
         ))}

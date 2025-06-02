@@ -1,33 +1,37 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react';
 import Loader from '../../components/ui/Loader/Loader';
 import { GetTF_003, ExportExcel } from '../../api/CardMO';
-import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
+import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef, type MRT_Row } from 'mantine-react-table';
 import { Button } from '@mantine/core';
 import { FcPrint } from 'react-icons/fc';
 
 const CardMOView = () => {
+    const CardMOTF_LPU1View = React.lazy(() => import('./CardMOTF_LPU1View'));
+    
     const [data, setData] = useState<any[]>([]);
+    const [selectedRow, setSelectedRow] = useState<any | null>(null);
+    const [activeRow, setActiveRow] = useState<any | null>(null);
+    const [loaderVisible, setLoaderVisible] = useState<boolean>(false);
 
-    const loaderRef = useRef<HTMLDivElement | null>(null);
     const exportGridRef = useRef<any[] | null>(null);
 
     const fetchData = useCallback(async() => {
-        if(loaderRef.current) { loaderRef.current.style.display = "flex" }
+        setLoaderVisible(true);
         try {
             const result = await GetTF_003();
             setData(result);
             exportGridRef.current = result;
         }
         finally {
-            if(loaderRef.current) { loaderRef.current.style.display = "none" }
+            setLoaderVisible(false);
         }
     }, [setData]);
 
     const CardMOExportExcel = useCallback(async() => {
-        if(loaderRef.current) { loaderRef.current.style.display = "flex" }
+        setLoaderVisible(true);
         try { await ExportExcel(exportGridRef.current) }
         finally {
-            if(loaderRef.current) { loaderRef.current.style.display = "none" }
+          setLoaderVisible(false);
         }
     }, [])
 
@@ -68,21 +72,48 @@ const CardMOView = () => {
         enableColumnActions: true,
         enableColumnFilters: true,
         enableSorting: true,
+        enableEditing: true,
+        //enableStickyHeader: true,
         mantineTableProps: {
-            withColumnBorders: true,
+          withColumnBorders: true,
         },
         initialState: {
-            pagination: {
-                pageIndex: 0,
-                pageSize: 10,
-            },
+          pagination: {
+            pageIndex: 0,
+            pageSize: 10,
+          },
         },
+        mantineTableBodyRowProps: ({ row }) => ({
+          onContextMenu: (event) => { 
+              event.preventDefault();
+              setSelectedRow(row);
+              setActiveRow(row);
+            },
+            onClick: () => {
+              setActiveRow(null);
+            }
+          }),
+          mantineTableBodyCellProps: ({ row }) => {
+              const isActive = activeRow?.id === row.id;
+              return {
+                style: {
+                  backgroundColor: isActive ? '#dee2e6' : 'inherit',
+                },
+              };
+          },
         renderTopToolbarCustomActions: () => (
-            <>
-            <Button variant='default' leftIcon={<FcPrint />} onClick={CardMOExportExcel}>Сохранить в Excel</Button>
-            </>
-        )
-    });
+          <Button variant='default' leftIcon={<FcPrint />} onClick={CardMOExportExcel}>
+            Сохранить в Excel
+          </Button>
+        ),
+        renderDetailPanel: ({ row }) => {
+          return (
+            <Suspense fallback={<div>Загрузка...</div>}>
+              <CardMOTF_LPU1View idTF_F003={row.original.id.toString()} />
+            </Suspense>
+          );
+        },
+      });
 
     useEffect(() => {
         fetchData();
@@ -90,7 +121,7 @@ const CardMOView = () => {
 
     return (
         <>
-            <Loader ref={loaderRef}/>
+            <Loader visible={loaderVisible}/>
             <MantineReactTable table={table}/>
         </>
     )

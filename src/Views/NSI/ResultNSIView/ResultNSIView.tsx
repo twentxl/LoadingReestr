@@ -1,11 +1,10 @@
 import React, { useState, useRef, useCallback, useMemo } from 'react';
-import ResultNSISearchPopup from '../ResultNSISearchPopup/ResultNSISearchPopup';
+import ResultNSISearch from './ResultNSISearch';
 import ContextMenu, { ContextMenuItem } from '../../../components/ui/ContextMenu/ContextMenu';
 import { PostTable, ExportExcel, DeleteRow } from '../../../api/NsiApi';
 import { Button } from '@mantine/core';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import Loader from '../../../components/ui/Loader/Loader';
-import { IoSearch } from 'react-icons/io5';
 import { FcDeleteRow } from "react-icons/fc";
 import { FcPrint } from 'react-icons/fc';
 
@@ -13,20 +12,14 @@ const ResultNSIView = () => {
     const [data, setData] = useState<any[]>([]);
     const [keyList, setKeyList] = useState([]);
     const [selectedRow, setSelectedRow] = useState<any | null>(null);
+    const [activeRow, setActiveRow] = useState<any | null>(null);
+    const [loaderVisible, setLoaderVisible] = useState<boolean>(false);
 
-    const popupNsiSearchRef = useRef<HTMLDivElement | null>(null);
-    const loaderRef = useRef<HTMLDivElement | null>(null);
     const contentRef = useRef<HTMLDivElement | null>(null);
     const nametableRef = useRef<string>(null);
 
-    const searchButton = () => {
-        if(popupNsiSearchRef.current) { popupNsiSearchRef.current.style.display = "flex"; }
-    };
-
     const fetchData = useCallback(async(getValue: any) => {
-        if(loaderRef.current) {
-            loaderRef.current.style.display = "flex";
-        }
+        setLoaderVisible(true);
         try {
             let keyListArray: any = [];
             const result = await PostTable(getValue.nametable);
@@ -48,9 +41,7 @@ const ResultNSIView = () => {
             console.error("Ошибка при загрузке данных", error);
         }
         finally {
-            if(loaderRef.current) {
-                loaderRef.current.style.display = "none";
-            }
+            setLoaderVisible(false);
         }
     }, [setData, setKeyList]);
 
@@ -58,24 +49,19 @@ const ResultNSIView = () => {
         if(contentRef.current && contentRef.current.style.display === "none") {
             contentRef.current.style.display = "block";
         }
-        if(popupNsiSearchRef.current) { popupNsiSearchRef.current.style.display = "none"; }
         fetchData(value);
     }, [fetchData]);
 
     const exportExcel = useCallback(async() => {
         try {
-            if(loaderRef.current) {
-                loaderRef.current.style.display = "flex";
-            }
+            setLoaderVisible(true);
             if(nametableRef.current) { await ExportExcel(nametableRef.current); }
         }
         catch(error) {
             console.error(error);
         }
         finally {
-            if(loaderRef.current) {
-                loaderRef.current.style.display = "none";
-            }
+            setLoaderVisible(false);
         }
     }, [])
 
@@ -102,15 +88,28 @@ const ResultNSIView = () => {
         enableColumnActions: true,
         enableColumnFilters: true,
         enableSorting: true,
+        //enableStickyHeader: true,
         mantineTableProps: {
             withColumnBorders: true,
         },
         mantineTableBodyRowProps: ({ row }) => ({
-            onContextMenu: (event) => {
+            onContextMenu: (event) => { 
                 event.preventDefault();
                 setSelectedRow(row);
-            }
+                setActiveRow(row);
+              },
+              onClick: () => {
+                setActiveRow(null);
+              }
         }),
+        mantineTableBodyCellProps: ({ row }) => {
+            const isActive = activeRow?.id === row.id;
+            return {
+              style: {
+                backgroundColor: isActive ? '#dee2e6' : 'inherit',
+              },
+            };
+        },
         initialState: {
             pagination: {
               pageIndex: 0,
@@ -134,11 +133,10 @@ const ResultNSIView = () => {
                 <ContextMenuItem text="Удалить" icon={FcDeleteRow} onClick={() => DeleteSelectedRow(selectedRow.original.id)}/>
             </ContextMenu>
             <div>
-                <Button variant='default' leftIcon={<IoSearch />} onClick={searchButton}>Поиск</Button>
-                <ResultNSISearchPopup ref={popupNsiSearchRef} onClick={resultClick}/>
+                <ResultNSISearch onClick={resultClick}/>
             </div>
             <div ref={contentRef}>
-                <Loader ref={loaderRef}/>
+                <Loader visible={loaderVisible}/>
                 <MantineReactTable table={table} />
             </div>
         </>

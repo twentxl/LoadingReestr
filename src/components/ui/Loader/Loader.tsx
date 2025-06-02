@@ -1,15 +1,20 @@
 import React from 'react';
 import style from "./Loader.module.css";
 
-const Loader = React.forwardRef<HTMLDivElement>(({  }, ref) => {
+interface LoaderProps {
+    visible: boolean;
+}
+const Loader: React.FC<LoaderProps> = ({ visible }) => {
     return (
-        <div className={style.loader} ref={ref}>
+        visible && (
+        <div className={style.loader}>
             <div className={style.loader__circle}></div>
             <div className={style.text}>
                 Загрузка...
             </div>
         </div>
+        )
     )
-});
+};
 
 export default Loader;

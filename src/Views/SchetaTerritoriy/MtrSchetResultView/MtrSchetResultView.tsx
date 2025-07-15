@@ -74,9 +74,6 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
             setLoaderVisible(true);
             await Mtr1ExportExcel(exportGridRef.current);
         }
-        catch(error) {
-            console.error(error);
-        }
         finally {
             setLoaderVisible(false);
         }

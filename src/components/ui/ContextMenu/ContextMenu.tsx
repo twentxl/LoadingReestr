@@ -31,7 +31,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({children, area}) => {
     const el = event.target as HTMLElement;
     const rect = el.getBoundingClientRect();
     const clickY = event.clientY;
-    const menuHeight = blockRef.current?.offsetHeight ?? 0; // Если undefined, возьмём 0
+    const menuHeight = blockRef.current?.offsetHeight ?? 0;
     let topY: number;
 
     if (rect.top < 0 || rect.bottom > window.innerHeight || clickY < window.innerHeight / 2) {

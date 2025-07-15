@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { GetTF_LPU1 } from '../../api/CardMO';
+import { GetTF_LPU1 } from '../../api/CardMOApi';
 import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
 import Loader from '../../components/ui/Loader/Loader';
 import ContextMenu, { ContextMenuItem } from '../../components/ui/ContextMenu/ContextMenu';

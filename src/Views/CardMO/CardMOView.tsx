@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react';
+import CardMOTF_LPU1View from './CardMOTF_LPU1View';
 import Loader from '../../components/ui/Loader/Loader';
-import { GetTF_003, ExportExcel } from '../../api/CardMO';
-import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef, type MRT_Row } from 'mantine-react-table';
+import { GetTF_003, ExportExcel } from '../../api/CardMOApi';
+import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
 import { Button } from '@mantine/core';
 import { FcPrint } from 'react-icons/fc';
 
 const CardMOView = () => {
-    const CardMOTF_LPU1View = React.lazy(() => import('./CardMOTF_LPU1View'));
-    
     const [data, setData] = useState<any[]>([]);
     const [selectedRow, setSelectedRow] = useState<any | null>(null);
     const [activeRow, setActiveRow] = useState<any | null>(null);
@@ -108,9 +107,7 @@ const CardMOView = () => {
         ),
         renderDetailPanel: ({ row }) => {
           return (
-            <Suspense fallback={<div>Загрузка...</div>}>
-              <CardMOTF_LPU1View idTF_F003={row.original.id.toString()} />
-            </Suspense>
+            <CardMOTF_LPU1View idTF_F003={row.original.id.toString()} />
           );
         },
       });

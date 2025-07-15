@@ -5,17 +5,18 @@ import SchetaGrid from './SchetaGrid';
 import SLGrid  from './SLGrid';
 import { Box, TextInput } from '@mantine/core';
 
-const PlatezhkiDetailView = () => { // N_PLPR D_PLPR T_PLPR DATA_OPL subname
+const PlatezhkiDetailView = () => {
     const [selectedId, setSelectedId] = React.useState<number | undefined>(undefined);
     const [selectedRow, setSelectedRow] = React.useState<any | undefined>(undefined);
     const [selectedRowSchet, setSelectedRowSchet] = React.useState<any | undefined>(undefined);
+    
     const handleSelectBUOP = (newIdBUOP: number) => { setSelectedId(newIdBUOP); }
     const handleSelectRow = (newRow: any) => { setSelectedRow(newRow); }
     const handleSelectRowSchet = (newRow: any) => { setSelectedRowSchet(newRow); }
 
     return (
         <Split className='split' style={{ flexDirection: 'column' }} direction='vertical'>
-            <Split className='split'>
+            <Split className='split' style={{ borderBottom: '1px solid #dee2e6' }}>
                     <Box style={{ height: '65vh', overflow: 'auto' }}><PlatPorGrid onSelectIdBUOP={handleSelectBUOP} onSelectRow={handleSelectRow}/></Box>
                     <Box>
                         <Box style={{ height: '32vh', overflowY: 'auto' }}><SchetaGrid idBUOP={selectedId} onSelectRow={handleSelectRowSchet}/></Box>
@@ -23,7 +24,7 @@ const PlatezhkiDetailView = () => { // N_PLPR D_PLPR T_PLPR DATA_OPL subname
                     </Box>
             </Split>
             {selectedRow && (
-                <div style={{ padding: '20px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-around' }}>
+            <div style={{ padding: '20px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-around' }}>
                 <div>
                     <h1 style={{marginBottom: '10px'}}>Сведения о плат. поручениях</h1>
                     <Box style={{ display: 'flex' , alignItems: 'center', marginBottom: '10px'}}>

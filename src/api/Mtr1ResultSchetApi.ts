@@ -62,7 +62,7 @@ export async function DeleteRow(idSCHETStatus: number) {
 
 export async function Mtr1ExportExcel(data: any) {
     try {
-        const response = await fetch(`${API_URL}api/MtrResultSchet/ExportExcel`, {
+       await fetch(`${API_URL}api/MtrResultSchet/ExportExcel`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

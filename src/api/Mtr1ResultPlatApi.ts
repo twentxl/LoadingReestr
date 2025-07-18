@@ -2,11 +2,11 @@ import { API_URL } from "./api_url";
 
 export interface Mtr1ResultPlatProps {
     typeIST: number;
-     D_PLPR1: string | null;
-     D_PLPR2: string | null;
-     N_PLPR: string | null;
-     DATA_OPL1: string | null;
-     DATA_OPL2: string | null;
+    D_PLPR1: string | null;
+    D_PLPR2: string | null;
+    N_PLPR: string | null;
+    DATA_OPL1: string | null;
+    DATA_OPL2: string | null;
 }
 export async function Mtr1ResultPlat(params: Mtr1ResultPlatProps) {
     try {
@@ -28,7 +28,7 @@ export async function Mtr1ResultPlat(params: Mtr1ResultPlatProps) {
 
 export async function ExportExcel(data: any) {
     try {
-        const response = await fetch(`${API_URL}api/Mtr1ResultPlat/ExportExcel`, {
+        await fetch(`${API_URL}api/Mtr1ResultPlat/ExportExcel`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ data })

@@ -15,6 +15,8 @@ const App: React.FC = () => {
   ]);
   const [activeTab, setActiveTab] = useState<string>('first');
 
+  const [tabsKey, setTabsKey] = useState<number>(0);
+
   const addTab = (label: string, ContentComponent: React.ReactNode) => {
     const timestamp = new Date().toLocaleString();
     const newTab: Tab = {
@@ -24,6 +26,7 @@ const App: React.FC = () => {
     };
     setTabs((prev) => [...prev, newTab]);
     setActiveTab(newTab.value);
+    setTabsKey(prev => prev + 1);
   };
 
   const removeTab = (value: string) => {
@@ -39,7 +42,11 @@ const App: React.FC = () => {
   return (
     <>
       <Header addTab={addTab} />
-      <Tabs defaultValue={activeTab} onChange={setActiveTab}>
+      <Tabs
+        key={tabsKey}
+        defaultValue={activeTab}
+        onChange={setActiveTab}
+      >
         <Tabs.List>
           {tabs.map((tab) => (
             <div key={tab.value} style={{ display: 'flex', alignItems: 'center' }}>

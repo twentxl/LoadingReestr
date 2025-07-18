@@ -59,7 +59,7 @@ export async function DeleteRow(nametable: string, idRow: string) {
 
 export async function ExportExcel(nametable: string) {
     try {
-        const response = await fetch(`${API_URL}api/NSI/ExportExcel`, {
+        await fetch(`${API_URL}api/NSI/ExportExcel`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ nametable })

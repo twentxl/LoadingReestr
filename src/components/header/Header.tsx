@@ -44,13 +44,22 @@ const Header: React.FC<HeaderProps> = ({ addTab }) => {
         addTab("МТР2 Счета на терр-рию", <MtrSchetResultView typeIST={2} />);
     }
     const Mtr1ResultPlatLink = () => {
-        addTab("Мтр1, Сведения о плат. поручениях", <Mtr1ResultPlatView />)
+        addTab("Мтр1, Сведения о плат. поручениях", <Mtr1ResultPlatView typeIST={2} />)
     };
-    const PlatezhkiDetailLink = () => {
-        addTab("МТР1, Учет движения денеж.средств на терр.", <PlatezhkiDetailView />)
+    const Mtr2ResultPlatLink = () => {
+        addTab("Мтр2, Сведения о плат. поручениях", <Mtr1ResultPlatView typeIST={3} />)
+    };
+    const Mtr1PlatezhkiDetailLink = () => {
+        addTab("МТР1, Учет движения денеж.средств на терр.", <PlatezhkiDetailView typeIST={2} />)
+    }
+    const Mtr2PlatezhkiDetailLink = () => {
+        addTab("МТР2, Учет движения денеж.средств на терр.", <PlatezhkiDetailView typeIST={3} />)
     }
     const Mtr1SvedFileXmlPPLink = () => {
         openModal('Mtr1SvedFileXmlPP');
+    }
+    const Mtr2SvedFileXmlPPLink = () => {
+        openModal('Mtr2SvedFileXmlPP');
     }
     const LetterDebtLink = () => {
         openModal("LetterDebt");
@@ -78,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({ addTab }) => {
                     <HeaderSubItemNavigate text="Платежные поручения">
                         <HeaderSubItem text="Разноска счетов по платежам" />
                         <HeaderSubItem text="Сведения о платежных поручениях" onClick={Mtr1ResultPlatLink} />
-                        <HeaderSubItem text="Учет движения денежных средств с территорий" onClick={PlatezhkiDetailLink} />
+                        <HeaderSubItem text="Учет движения денежных средств с территорий" onClick={Mtr1PlatezhkiDetailLink} />
                         <HeaderSubItem text="Сведения о файлах xml от бух-рии" onClick={Mtr1SvedFileXmlPPLink}/>
                     </HeaderSubItemNavigate>
                     <HeaderSubItem text="Детализированный поиск(МТР1)" />
@@ -97,13 +106,22 @@ const Header: React.FC<HeaderProps> = ({ addTab }) => {
                 </HeaderSubItemNavigate>
                 <HeaderSubItemNavigate text="Входящие">
                     <HeaderSubItem text="Сведения о счетах" onClick={Mtr2SchetLink}/>
+                    <HeaderSubItemNavigate text="Платежные поручения">
+                        <HeaderSubItem text="Разноска счетов по платежам" />
+                        <HeaderSubItem text="Сведения о платежных поручениях" onClick={Mtr2ResultPlatLink} />
+                        <HeaderSubItem text="Учет движения денежных средств с территорий" onClick={Mtr2PlatezhkiDetailLink} />
+                        <HeaderSubItem text="Сведения о файлах xml от бух-рии" onClick={Mtr2SvedFileXmlPPLink}/>
+                    </HeaderSubItemNavigate>
                 </HeaderSubItemNavigate>
             </HeaderSubButton>
         </header>
 
         {/* Modals */}
         {modal['Mtr1SvedFileXmlPP'] && (
-        <Mtr1SvedFileXmlPPView visible={true} onClose={() => closeModal('Mtr1SvedFileXmlPP')} />
+        <Mtr1SvedFileXmlPPView typeIST={1} title="МТР1, Сведения о файлах xml от бухгалтерии" visible={true} onClose={() => closeModal('Mtr1SvedFileXmlPP')} />
+        )}
+        {modal['Mtr2SvedFileXmlPP'] && (
+        <Mtr1SvedFileXmlPPView typeIST={2} title="МТР2, Сведения о файлах xml от бухгалтерии" visible={true} onClose={() => closeModal('Mtr2SvedFileXmlPP')} />
         )}
         {modal['LetterDebt'] && (
             <LetterDebtView visible={true} onClose={() => closeModal('LetterDebt')} />

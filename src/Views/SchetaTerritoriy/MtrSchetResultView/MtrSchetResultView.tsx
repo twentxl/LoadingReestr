@@ -2,12 +2,14 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
 import { formatDateTime } from "../../../helper/formatting";
 import { Mtr1ResultSchet, Mtr1ExportExcel, DeleteRow, type Mtr1ResultSchetParams } from '../../../api/Mtr1ResultSchetApi';
-import ContextMenu, { ContextMenuItem } from '../../../components/ui/ContextMenu/ContextMenu';
+import ContextMenu, { ContextMenuItem } from '../../../components/ContextMenu/ContextMenu';
 import Loader from "../../../components/ui/Loader/Loader";
 import { Button } from '@mantine/core';
 import MtrSchetSearchPopup from './MtrSchetSearchPopup';
 import { IoSearch } from "react-icons/io5";
+import { Checkbox } from '@mantine/core';
 import { FcPrint, FcDatabase, FcAnswers, FcUpload, FcList, FcCalendar, FcDataSheet, FcSynchronize, FcKindle, FcFullTrash, FcPlus } from "react-icons/fc";
+import SegmentDetailWindow from '../../OtherComponents/SegmentDetailWindow/SegmentDetailWindow';
 
 interface MtrSchetResultViewProps {
     typeIST: number;
@@ -18,7 +20,8 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
     const [activeRow, setActiveRow] = useState<any | null>(null);
     const [ visiblePopup, setVisiblePopup ] = useState<boolean>(true);
     const [loaderVisible, setLoaderVisible] = useState<boolean>(false);
-
+    const [segmentVisible, setSegmentVisible] = useState<boolean>(false);
+    const [segmentData, setSegmentData] = useState<any[]>([{"FieldName": "нет данных", "Value": "нет данных"}]);
 
     const contentRef = useRef<HTMLDivElement | null>(null);
     const exportGridRef = useRef<any[]>([]);
@@ -79,23 +82,11 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
         }
     }, []);
 
-    //Context menu onClick
-    const DeleteSelectedRow = useCallback(async(idSCHETStatus: number) => {
-        var result = confirm(`Вы действительно хотите удалить запись idSCHETStatus=${idSCHETStatus}?`);
-        if(result) {
-            await DeleteRow(idSCHETStatus);
-            const filteredData = data.filter(item => item.idSCHETStatus !== idSCHETStatus);
-            setData(filteredData);
-            exportGridRef.current = filteredData;
-        }
-    }, [])
-    //end Context menu onClick
-
     const columns: MRT_ColumnDef<any>[] = useMemo(
         () => [
             { accessorKey: 'name', header: 'Наименование статуса загрузки архива' },
             { accessorKey: 'comment_tfoms', header: 'Комментарий (ТФОМС)' },
-            { accessorKey: 'block', header: 'блокировка счета' },
+            { accessorKey: 'block', header: 'блокировка счета', Cell: ({ cell }) => ( <Checkbox checked={cell.getValue<boolean>()} readOnly /> ), },
             { accessorKey: 'Mdate', header: 'Дата формирования уведомления' },
             { accessorKey: 'dateregistration', header: 'Дата регистрации' },
             { accessorKey: 'DATA_OPL_SCHET', header: 'Дата оплаты счета' },
@@ -177,6 +168,23 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
         )
       });
 
+    //start Context menu onClick
+    const DeleteSelectedRow = useCallback(async(idSCHETStatus: number) => {
+        var result = confirm(`Вы действительно хотите удалить запись idSCHETStatus=${idSCHETStatus}?`);
+        if(result) {
+            await DeleteRow(idSCHETStatus);
+            const filteredData = data.filter(item => item.idSCHETStatus !== idSCHETStatus);
+            setData(filteredData);
+            exportGridRef.current = filteredData;
+        }
+    }, []);
+    const GetRowSegmentInfo = useCallback(async(row: any) => {
+        setSegmentVisible(true);
+        const result: any[] = Object.keys(row).map(key => ({ "FieldName": key, "Value": row[key as keyof typeof row] }));
+        setSegmentData(result);
+    }, [setSegmentVisible])
+    //end Context menu onClick
+
       useEffect(() => {
         if(contentRef.current) { contentRef.current.style.display = "none"; }
       }, []);
@@ -187,7 +195,7 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
                 <ContextMenuItem text="Законченные случаи" icon={FcDatabase}/>
                 <ContextMenuItem text="Сведения об оплате счета у бухгалтерии" icon={FcAnswers}/>
                 <ContextMenuItem text="Запрос в ФЕРЗЛ" icon={FcUpload}/>
-                <ContextMenuItem text="Развернутая информация о счёте" icon={FcList}/>
+                <ContextMenuItem text="Развернутая информация о счёте" icon={FcList} onClick={() => GetRowSegmentInfo(selectedRow.original)}/>
                 <ContextMenuItem text="Присвоить дату" icon={FcCalendar}/>
                 <ContextMenuItem text="Сведения о плат. пор." icon={FcDataSheet}/>
                 <ContextMenuItem text="Выгрузка данных" icon={FcKindle}/>
@@ -204,6 +212,7 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
                 <Loader visible={loaderVisible} />
                 <MantineReactTable table={table} />
             </div>
+            <SegmentDetailWindow visible={segmentVisible} onClose={() => setSegmentVisible(false)} data={segmentData}/>
         </>
     )
 };

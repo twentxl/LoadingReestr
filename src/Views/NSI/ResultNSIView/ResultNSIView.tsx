@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import ResultNSISearch from './ResultNSISearch';
-import ContextMenu, { ContextMenuItem } from '../../../components/ui/ContextMenu/ContextMenu';
+import ContextMenu, { ContextMenuItem } from '../../../components/ContextMenu/ContextMenu';
 import { PostTable, ExportExcel, DeleteRow } from '../../../api/NsiApi';
 import { Button } from '@mantine/core';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';

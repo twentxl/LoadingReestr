@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Popup from '../../../components/ui/Popup/Popup';
+import Popup from '../../../components/Popup/Popup';
 import { Button, TextInput, Group, Grid } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import LookUpEdit from '../../../components/ui/LookUpEdit/LookUpEdit';

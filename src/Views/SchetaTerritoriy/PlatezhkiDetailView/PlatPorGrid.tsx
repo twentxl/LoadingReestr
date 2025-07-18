@@ -5,10 +5,11 @@ import { Button, Title } from '@mantine/core';
 import { FcPrint } from 'react-icons/fc';
 
 interface PlatPorGridProps {
+    typeIST: number;
     onSelectIdBUOP?: (id: number) => void;
     onSelectRow?: (row: any) => void;
   }
-const PlatPorGrid: React.FC<PlatPorGridProps> = ({ onSelectIdBUOP, onSelectRow }) => {
+const PlatPorGrid: React.FC<PlatPorGridProps> = ({ typeIST, onSelectIdBUOP, onSelectRow }) => {
     const [data, setData] = useState<any[]>([]);
     const [selectedRow, setSelectedRow] = useState<any | null>(null);
     const [activeRow, setActiveRow] = useState<any | null>(null);
@@ -17,7 +18,7 @@ const PlatPorGrid: React.FC<PlatPorGridProps> = ({ onSelectIdBUOP, onSelectRow }
     
     const fetchData = React.useCallback(async() => {
         const param: getPlatPorGridProps = {
-            typeIST: 3,
+            typeIST: typeIST,
             kod_ter: '',
             T_PLPR: undefined,
             D_PLPR: '',

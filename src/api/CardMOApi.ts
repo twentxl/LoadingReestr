@@ -37,7 +37,7 @@ export async function GetTF_LPU1(idTF_F003: string) {
 
 export async function ExportExcel(data: any) {
     try {
-        const response = await fetch(`${API_URL}api/CardMO/ExportExcel`, {
+        await fetch(`${API_URL}api/CardMO/ExportExcel`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ data })

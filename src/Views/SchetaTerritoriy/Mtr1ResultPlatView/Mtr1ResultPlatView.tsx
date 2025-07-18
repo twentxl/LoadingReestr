@@ -7,7 +7,10 @@ import { Button } from '@mantine/core';
 import Loader from '../../../components/ui/Loader/Loader';
 import { FcPrint } from 'react-icons/fc';
 
-const Mtr1ResultPlatView = () => {
+interface Mtr1ResultPlatViewProps {
+    typeIST: number;
+}
+const Mtr1ResultPlatView: React.FC<Mtr1ResultPlatViewProps> = ({ typeIST }) => {
     const [data, setData] = useState<any[]>([]);
     const [loaderVisible, setLoaderVisible] = useState<boolean>(false);
 
@@ -19,7 +22,7 @@ const Mtr1ResultPlatView = () => {
         try {
             if(contentRef.current) { contentRef.current.style.display = "block" }
             const params: Mtr1ResultPlatProps = {
-                typeIST: 3,
+                typeIST: typeIST,
                 D_PLPR1: formatDateTime(values.D_PLPR1),
                 D_PLPR2: formatDateTime(values.D_PLPR2),
                 N_PLPR: values.N_PLPR,

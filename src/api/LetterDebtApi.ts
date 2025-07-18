@@ -7,7 +7,7 @@ export interface ExportFileParams {
 }
 export async function ExportFile(params: ExportFileParams) {
     try {
-        const response = await fetch(`${API_URL}api/LetterDebt`, {
+        await fetch(`${API_URL}api/LetterDebt`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ ...params })

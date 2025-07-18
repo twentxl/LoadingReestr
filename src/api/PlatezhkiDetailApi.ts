@@ -76,7 +76,7 @@ export async function getSL(IDBUOP_PL_SCH: number | undefined) {
 
 export async function ExportExcel_PlatPorGrid(data: any) {
     try {
-        const response = await fetch(`${API_URL}api/PlatezhkiDetail/ExportExcel`, {
+        await fetch(`${API_URL}api/PlatezhkiDetail/ExportExcel`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ data })

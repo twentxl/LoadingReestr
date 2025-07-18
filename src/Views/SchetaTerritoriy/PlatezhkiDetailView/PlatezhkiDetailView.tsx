@@ -5,7 +5,10 @@ import SchetaGrid from './SchetaGrid';
 import SLGrid  from './SLGrid';
 import { Box, TextInput } from '@mantine/core';
 
-const PlatezhkiDetailView = () => {
+interface PlatezhkiDetailViewProps {
+    typeIST: number;
+}
+const PlatezhkiDetailView: React.FC<PlatezhkiDetailViewProps> = ({ typeIST }) => {
     const [selectedId, setSelectedId] = React.useState<number | undefined>(undefined);
     const [selectedRow, setSelectedRow] = React.useState<any | undefined>(undefined);
     const [selectedRowSchet, setSelectedRowSchet] = React.useState<any | undefined>(undefined);
@@ -17,7 +20,7 @@ const PlatezhkiDetailView = () => {
     return (
         <Split className='split' style={{ flexDirection: 'column' }} direction='vertical'>
             <Split className='split' style={{ borderBottom: '1px solid #dee2e6' }}>
-                    <Box style={{ height: '65vh', overflow: 'auto' }}><PlatPorGrid onSelectIdBUOP={handleSelectBUOP} onSelectRow={handleSelectRow}/></Box>
+                    <Box style={{ height: '65vh', overflow: 'auto' }}><PlatPorGrid typeIST={typeIST} onSelectIdBUOP={handleSelectBUOP} onSelectRow={handleSelectRow}/></Box>
                     <Box>
                         <Box style={{ height: '32vh', overflowY: 'auto' }}><SchetaGrid idBUOP={selectedId} onSelectRow={handleSelectRowSchet}/></Box>
                         <Box style={{ height: '32vh', overflowY: 'auto' }}><SLGrid idBUOP={selectedId}/></Box>

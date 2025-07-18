@@ -1,22 +1,24 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useMantineReactTable, MantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
-import Popup from '../../../components/ui/Popup/Popup';
+import Popup from '../../../components/Popup/Popup';
 import Loader from '../../../components/ui/Loader/Loader';
 import { Mtr1SvedFileXml_select } from '../../../api/Mtr1SvedFileXmlPPApi';
 import { Box } from '@mantine/core';
 
 interface Mtr1SvedFileXmlPPProps {
+    typeIST: number;
+    title: string;
     visible: boolean;
     onClose: () => void;
 }
-const Mtr1SvedFileXmlPPView: React.FC<Mtr1SvedFileXmlPPProps> = ({ visible, onClose }) => {
+const Mtr1SvedFileXmlPPView: React.FC<Mtr1SvedFileXmlPPProps> = ({ typeIST, title, visible, onClose }) => {
     const [data, setData] = useState<any[]>([]);
     const [loaderVisible, setLoaderVisible] = useState<boolean>(false);
 
     const fetchData = useCallback(async() => {
         setLoaderVisible(true);
         try {
-            const result = await Mtr1SvedFileXml_select(1);
+            const result = await Mtr1SvedFileXml_select(typeIST);
             setData(result);
         }
         finally {
@@ -54,7 +56,7 @@ const Mtr1SvedFileXmlPPView: React.FC<Mtr1SvedFileXmlPPProps> = ({ visible, onCl
     })
 
     return (
-        <Popup title="МТР1, Сведения о файлах xml от бухгалтерии" visible={visible} onClose={onClose}>
+        <Popup title={title} visible={visible} onClose={onClose}>
             <Loader visible={loaderVisible} />
             <Box style={{ height: '500px', overflowY: 'auto'}}><MantineReactTable table={table} /></Box>
         </Popup>

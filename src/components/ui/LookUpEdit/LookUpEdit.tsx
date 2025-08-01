@@ -48,10 +48,33 @@ const LookUpEdit: React.FC<LookUpEditProps> = ({ label, data, width, memoAccesso
         enablePagination: false,
         enableSorting: false,
         //enableStickyHeader: true,
+        mantineTableProps: {
+            withColumnBorders: true,
+            sx: {
+                'thead > tr': { backgroundColor: '#d8d8d8', },
+                'thead > tr > th': { backgroundColor: '#d8d8d8', },
+                'tbody > tr > td': { backgroundColor: '#d8d8d8', },
+            },
+        },
         mantineTableBodyRowProps: ({ row }) => ({
             onClick: () => {
               handleRowClick(row);
             },
+        }),
+        mantineTableBodyCellProps: ({ row }) => {
+            const dateendValueNotEnd = row.original.dateend == '2222-01-01'
+            const dateendIsExists = row.original.dateend;
+            return {
+                style: {
+                    backgroundColor: 'inherit',
+                    color: dateendIsExists ? (!dateendValueNotEnd ? '#f00' : 'inherit') : 'inherit',
+                }
+            }
+        },
+        mantineTableHeadCellProps: () => ({
+            style: {
+              backgroundColor: '#f5f5f5',
+            }
         }),
     });
 

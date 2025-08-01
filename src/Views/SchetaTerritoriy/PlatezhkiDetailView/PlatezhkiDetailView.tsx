@@ -20,10 +20,10 @@ const PlatezhkiDetailView: React.FC<PlatezhkiDetailViewProps> = ({ typeIST }) =>
     return (
         <Split className='split' style={{ flexDirection: 'column' }} direction='vertical'>
             <Split className='split' style={{ borderBottom: '1px solid #dee2e6' }}>
-                    <Box style={{ height: '65vh', overflow: 'auto' }}><PlatPorGrid typeIST={typeIST} onSelectIdBUOP={handleSelectBUOP} onSelectRow={handleSelectRow}/></Box>
+                    <Box><PlatPorGrid typeIST={typeIST} onSelectIdBUOP={handleSelectBUOP} onSelectRow={handleSelectRow}/></Box>
                     <Box>
-                        <Box style={{ height: '32vh', overflowY: 'auto' }}><SchetaGrid idBUOP={selectedId} onSelectRow={handleSelectRowSchet}/></Box>
-                        <Box style={{ height: '32vh', overflowY: 'auto' }}><SLGrid idBUOP={selectedId}/></Box>
+                        <Box><SchetaGrid idBUOP={selectedId} onSelectRow={handleSelectRowSchet}/></Box>
+                        <Box><SLGrid idBUOP={selectedId}/></Box>
                     </Box>
             </Split>
             {selectedRow && (

@@ -27,10 +27,10 @@ const initialValue: initialValueParameters = {
     date2: '',
 }
 const memoAccessorKey = [
-    { accessorKey: 'code', header: 'code', size: 50 },
-    { accessorKey: 'name', header: 'name', size: 50 },
-    { accessorKey: 'datebeg', header: 'datebeg', size: 50 },
-    { accessorKey: 'dateend', header: 'dateend', size: 50 },
+    { accessorKey: 'code', header: 'Код', size: 50 },
+    { accessorKey: 'name', header: 'Название', size: 50 },
+    { accessorKey: 'datebeg', header: 'Дата начала', size: 50 },
+    { accessorKey: 'dateend', header: 'Дата окончания', size: 50 },
 ];
 interface ResultMtrSchetPopupProps {
     title: string;

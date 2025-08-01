@@ -4,7 +4,6 @@ export async function GetTFOMSNSI() {
     try {
         const response = await fetch(`${API_URL}api/NSI`, {
             method: "GET",
-            headers: {'Content-Type': 'application/json'}
         });
         if(!response.ok) {
             throw new Error("Ошибка при выполнении запроса!");

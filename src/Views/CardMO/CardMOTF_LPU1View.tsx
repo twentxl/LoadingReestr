@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { GetTF_LPU1 } from '../../api/CardMOApi';
-import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
+import { type MRT_ColumnDef } from 'mantine-react-table';
+import Table from '../../components/Table/Table';
 import Loader from '../../components/ui/Loader/Loader';
 import ContextMenu, { ContextMenuItem } from '../../components/ContextMenu/ContextMenu';
 import { FcDiploma1, FcDeleteRow, FcPrint } from "react-icons/fc";
@@ -44,42 +45,79 @@ const CardMOTF_LPU1View: React.FC<CardMOTF_LPU1Props> = ({ idTF_F003 }) => {
         { accessorKey: "OID_LPU_1", header: "OID_LPU_1" },
     ], []);
 
-    const table = useMantineReactTable({
-        columns,
-        data,
-        enableColumnActions: true,
-        enableColumnFilters: true,
-        enableSorting: true,
-        enableEditing: true,
-        //enableStickyHeader: true,
-        mantineTableProps: {
-            withColumnBorders: true,
-        },
-        mantineTableBodyRowProps: ({ row }) => ({
-            onContextMenu: (event) => { 
-                event.preventDefault();
-                setSelectedRow(row);
-                setActiveRow(row);
-              },
-              onClick: () => {
-                setActiveRow(null);
-              }
-        }),
-        mantineTableBodyCellProps: ({ row }) => {
-            const isActive = activeRow?.id === row.id;
-            return {
-              style: {
-                backgroundColor: isActive ? '#dee2e6' : 'inherit',
-              },
-            };
-        },
-        initialState: {
-            pagination: {
-                pageIndex: 0,
-                pageSize: 5,
-            },
-        },
+    // const table = useMantineReactTable({
+    //     columns,
+    //     data,
+    //     enableColumnActions: true,
+    //     enableColumnFilters: true,
+    //     enableSorting: true,
+    //     enableEditing: true,
+    //     enableStickyHeader: true,
+    //     mantineTableProps: {
+    //         withColumnBorders: true,
+    //         sx: {
+    //             'thead > tr': { backgroundColor: '#d8d8d8', },
+    //             'thead > tr > th': { backgroundColor: '#d8d8d8', },
+    //             'tbody > tr > td': { backgroundColor: '#d8d8d8', },
+    //         },
+    //     },
+    //     mantineTableBodyRowProps: ({ row }) => ({
+    //         onContextMenu: (event) => { 
+    //             event.preventDefault();
+    //             setSelectedRow(row);
+    //             setActiveRow(row);
+    //           },
+    //           onClick: () => {
+    //             setActiveRow(null);
+    //           }
+    //     }),
+    //     mantineTableBodyCellProps: ({ row }) => {
+    //         const isActive = activeRow?.id === row.id;
+    //         const dateendValueNotEnd = row.original.dateend == '2222-01-01';
+    //         return {
+    //           style: {
+    //             backgroundColor: isActive ? '#dee2e6' : 'inherit',
+    //             color: !dateendValueNotEnd ? '#f00' : 'inherit',
+    //           },
+    //         };
+    //     },
+    //     mantineTableHeadCellProps: () => ({
+    //         style: {
+    //           backgroundColor: '#f5f5f5',
+    //         }
+    //     }),
+    //     initialState: {
+    //         pagination: {
+    //             pageIndex: 0,
+    //             pageSize: 5,
+    //         },
+    //     },
+    // });
+    const headCell = () => ({
+        style: {
+            backgroundColor: '#f5f5f5',
+        }
     });
+    const bodyCell = ({ row }: {row: any}) => {
+        const isActive = activeRow?.id === row.id;
+        const dateendValueNotEnd = row.original.dateend == '2222-01-01';
+        return {
+            style: {
+            backgroundColor: isActive ? '#dee2e6' : 'inherit',
+            color: !dateendValueNotEnd ? '#f00' : 'inherit',
+            },
+        };
+    }
+    const bodyRow = ({ row }: {row: any}) => ({
+        onContextMenu: (event: any) => { 
+            event.preventDefault();
+            setSelectedRow(row);
+            setActiveRow(row);
+            },
+            onClick: () => {
+            setActiveRow(null);
+            }
+    })
 
     useEffect(() => {
         fetchData();
@@ -94,7 +132,13 @@ const CardMOTF_LPU1View: React.FC<CardMOTF_LPU1Props> = ({ idTF_F003 }) => {
         </ContextMenu>
         <div ref={contentRef}>
             <Loader visible={loaderVisible} />
-            <MantineReactTable table={table} />
+            <Table columns={columns} 
+                    data={data} 
+                    pageSize={5} 
+                    containerHeight={50} 
+                    headCellProps={headCell} 
+                    bodyCellProps={bodyCell} 
+                    bodyRowProps={bodyRow}/>
         </div>
     </>
     )

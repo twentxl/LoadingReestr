@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react';
-import CardMOTF_LPU1View from './CardMOTF_LPU1View';
 import Loader from '../../components/ui/Loader/Loader';
+import Table from '../../components/Table/Table';
 import { GetTF_003, ExportExcel } from '../../api/CardMOApi';
-import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
+import { type MRT_ColumnDef } from 'mantine-react-table';
 import { Button } from '@mantine/core';
 import { FcPrint } from 'react-icons/fc';
 
@@ -11,6 +11,8 @@ const CardMOView = () => {
     const [selectedRow, setSelectedRow] = useState<any | null>(null);
     const [activeRow, setActiveRow] = useState<any | null>(null);
     const [loaderVisible, setLoaderVisible] = useState<boolean>(false);
+
+    const CardMOTF_LPU1View = React.lazy(() => import('./CardMOTF_LPU1View'));
 
     const exportGridRef = useRef<any[] | null>(null);
 
@@ -63,54 +65,45 @@ const CardMOView = () => {
         { accessorKey: "idTfomsPRIKREPMO", header: "Тип прикрепления",},
         { accessorKey: "OKTMO", header: "OKTMO" },
         { accessorKey: "OID", header: "OID" },
-    ], []);   
-      
-    const table = useMantineReactTable({
-        columns,
-        data,
-        enableColumnActions: true,
-        enableColumnFilters: true,
-        enableSorting: true,
-        enableEditing: true,
-        //enableStickyHeader: true,
-        mantineTableProps: {
-          withColumnBorders: true,
-        },
-        initialState: {
-          pagination: {
-            pageIndex: 0,
-            pageSize: 10,
+    ], []); 
+
+    const headCell = () => ({
+      style: {
+        backgroundColor: '#f5f5f5',
+      }
+    });
+    const bodyCell = ({ row }: {row: any}) => {
+        const isActive = activeRow?.id === row.id;
+        const dateendValueNotEnd = row.original.dateend == '2222-01-01';
+        return {
+          style: {
+            backgroundColor: isActive ? '#dee2e6' : 'inherit',
+            color: !dateendValueNotEnd ? '#f00' : 'inherit',
           },
+        };
+    };
+    const bodyRow = ({ row }: {row: any}) => ({
+      onContextMenu: (event: any) => { 
+          event.preventDefault();
+          setSelectedRow(row);
+          setActiveRow(row);
         },
-        mantineTableBodyRowProps: ({ row }) => ({
-          onContextMenu: (event) => { 
-              event.preventDefault();
-              setSelectedRow(row);
-              setActiveRow(row);
-            },
-            onClick: () => {
-              setActiveRow(null);
-            }
-          }),
-          mantineTableBodyCellProps: ({ row }) => {
-              const isActive = activeRow?.id === row.id;
-              return {
-                style: {
-                  backgroundColor: isActive ? '#dee2e6' : 'inherit',
-                },
-              };
-          },
-        renderTopToolbarCustomActions: () => (
-          <Button variant='default' leftIcon={<FcPrint />} onClick={CardMOExportExcel}>
-            Сохранить в Excel
-          </Button>
-        ),
-        renderDetailPanel: ({ row }) => {
+        onClick: () => {
+          setActiveRow(null);
+        }
+      })
+      const topToolbar = () => (
+        <Button variant='default' leftIcon={<FcPrint />} onClick={CardMOExportExcel}>
+          Сохранить в Excel
+        </Button>
+      )
+      const renderPanel = ({ row }: {row:any}) => {
           return (
-            <CardMOTF_LPU1View idTF_F003={row.original.id.toString()} />
+            <Suspense fallback={<div>Загрузка...</div>}>
+              <CardMOTF_LPU1View idTF_F003={row.original.id.toString()} />
+            </Suspense>
           );
-        },
-      });
+        }
 
     useEffect(() => {
         fetchData();
@@ -119,7 +112,15 @@ const CardMOView = () => {
     return (
         <>
             <Loader visible={loaderVisible}/>
-            <MantineReactTable table={table}/>
+            <Table columns={columns} 
+                  data={data} 
+                  pageSize={10} 
+                  containerHeight={70} 
+                  headCellProps={headCell} 
+                  bodyCellProps={bodyCell} 
+                  bodyRowProps={bodyRow} 
+                  topToolbarCustomActions={topToolbar} 
+                  renderDetail={renderPanel}/>
         </>
     )
 };

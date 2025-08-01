@@ -4,7 +4,6 @@ export async function GetTF_003() {
     try {
         const response = await fetch(`${API_URL}api/CardMO`, {
             method: "GET",
-            headers: { 'Content-Type': 'application/json' }
         });
         if(!response.ok) { throw new Error("Ошибка при выполнении запроса!"); }
 

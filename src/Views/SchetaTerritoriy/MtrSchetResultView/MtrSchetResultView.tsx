@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
+import { type MRT_ColumnDef } from 'mantine-react-table';
+import Table from '../../../components/Table/Table';
 import { formatDateTime } from "../../../helper/formatting";
 import { Mtr1ResultSchet, Mtr1ExportExcel, DeleteRow, type Mtr1ResultSchetParams } from '../../../api/Mtr1ResultSchetApi';
 import ContextMenu, { ContextMenuItem } from '../../../components/ContextMenu/ContextMenu';
@@ -18,7 +19,7 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
     const [data, setData] = useState<any[]>([]);
     const [selectedRow, setSelectedRow] = useState<any | null>(null);
     const [activeRow, setActiveRow] = useState<any | null>(null);
-    const [ visiblePopup, setVisiblePopup ] = useState<boolean>(true);
+    const [visiblePopup, setVisiblePopup] = useState<boolean>(true);
     const [loaderVisible, setLoaderVisible] = useState<boolean>(false);
     const [segmentVisible, setSegmentVisible] = useState<boolean>(false);
     const [segmentData, setSegmentData] = useState<any[]>([{"FieldName": "нет данных", "Value": "нет данных"}]);
@@ -84,38 +85,100 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
 
     const columns: MRT_ColumnDef<any>[] = useMemo(
         () => [
-            { accessorKey: 'name', header: 'Наименование статуса загрузки архива' },
-            { accessorKey: 'comment_tfoms', header: 'Комментарий (ТФОМС)' },
-            { accessorKey: 'block', header: 'блокировка счета', Cell: ({ cell }) => ( <Checkbox checked={cell.getValue<boolean>()} readOnly /> ), },
+            { accessorKey: 'name', header: 'Наименование статуса загрузки' },
+            { accessorKey: 'comment_tfoms', header: 'Комментарий' },
+            { accessorKey: 'block', header: 'Блокировка счета', Cell: ({ cell }) => ( <Checkbox checked={cell.getValue<boolean>()} readOnly /> ), },
             { accessorKey: 'Mdate', header: 'Дата формирования уведомления' },
             { accessorKey: 'dateregistration', header: 'Дата регистрации' },
             { accessorKey: 'DATA_OPL_SCHET', header: 'Дата оплаты счета' },
-            { accessorKey: 'yeardateregistration', header: 'Год регистарции' },
-            { accessorKey: 'monthdateregistration', header: 'Месяц регистарции' },
+            { accessorKey: 'yeardateregistration', header: 'Год регистрации' },
+            { accessorKey: 'monthdateregistration', header: 'Месяц регистрации' },
             { accessorKey: 'gis', header: 'Источник файла' },
-            { accessorKey: 'firstnamefile', header: 'имя основного файла' },
-            { accessorKey: 'namefilearh', header: 'наименование архива' },
-            { accessorKey: 'C_OKATO1', header: 'Код территории,выставившей счет' },
-            { accessorKey: 'subname', header: 'Наименование территории,выставившей счет' },
-            { accessorKey: 'OKATO_OMS', header: 'Код ОКАТО территории страховани по ОМС (территория в которую выставляется счет)' },
+            { accessorKey: 'firstnamefile', header: 'Наименование основного файла' },
+            { accessorKey: 'namefilearh', header: 'Наименование архива' },
+            { accessorKey: 'C_OKATO1', header: 'ОКАТО терр. выст. счет' },
+            { accessorKey: 'subname', header: 'Наименование терр., выставившей счет' },
+            { accessorKey: 'OKATO_OMS', header: 'Код ОКАТО терр. страх. по ОМС' },
             { accessorKey: 'CODE_TF', header: 'Код ТФОМС' },
-            { accessorKey: 'subname1', header: 'Наименование территории страховани по ОМС (территория в которую выставляется счет)' },
-            { accessorKey: 'YEAR', header: 'Отчетный год в файле (терр.)' },
-            { accessorKey: 'MONTH', header: 'Отчетный месяц в файле (терр.)' },
-            { accessorKey: 'NSCHET', header: 'Номер счёта (терр.)' },
-            { accessorKey: 'DSCHET', header: 'Дата выставления счета (терр.)' },
-            { accessorKey: 'SD_Z', header: 'К-во поданных случаев (терр.)' },
-            { accessorKey: 'SD_Zopl', header: 'К-во принятых случаев (ТФОМС)' },
-            { accessorKey: 'SD_Zerror', header: 'К-во отклоненых случаев  (ТФОМС) ' },
-            { accessorKey: 'SUMMAV', header: 'Сумма счета выставленная на оплату (терр.)' },
-            { accessorKey: 'SUMMAP', header: 'Сумма принята к оплате (терр.)' },
-            { accessorKey: 'SANK_MEK_MEE_EKMP', header: 'Санкции МЭК,МЭЭ,ЭКМП (терр.)' },
-            { accessorKey: 'SUMMAP_tf', header: 'Сумма принята к оплате (ТФОМС)' },
-            { accessorKey: 'SANK_MEK_tf', header: 'Санкции МЭК (ТФОМС)' },
-            { accessorKey: 'SANK_MEE_EKMP', header: 'Санкции МЭЭ,ЭКМП (ТФОМС)' },
-            { accessorKey: 'sum_schopl', header: 'Сумма оплаченная по бух' },
-            { accessorKey: 'sum_schvzvr', header: 'Сумма возврата по бух' },
-            { accessorKey: 'sum_itogo', header: 'Сумма оплаченная по бух. с учетом возврата' },
+            { accessorKey: 'subname1', header: 'Наименование терр. страх. по ОМС' },
+            { accessorKey: 'YEAR', header: 'Отчетный год (ТО МП)' },
+            { accessorKey: 'MONTH', header: 'Отчетный месяц(ТО МП)' },
+            { accessorKey: 'NSCHET', header: 'Номер счёта (ТО МП)' },
+            { accessorKey: 'DSCHET', header: 'Дата выставления счета (ТО МП)' },
+
+            { accessorKey: 'SD_Z', header: 'К-во поданных случаев (ТО МП)', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.SD_Z ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            } },
+
+            { accessorKey: 'SD_Zopl', header: 'К-во принятых случаев (ТС)', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.SD_Zopl ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            }},
+            { accessorKey: 'SD_Zerror', header: 'К-во отклоненых случаев  (ТС)', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.SD_Zerror ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            }},
+            { accessorKey: 'SUMMAV', header: 'Сумма счета выставленная на оплату (ТО МП)', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.SUMMAV ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            }},
+            { accessorKey: 'SUMMAP', header: 'Сумма принята к оплате (ТО МП)', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.SUMMAP ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            }},
+            { accessorKey: 'SANK_MEK_MEE_EKMP', header: 'Санкции МЭК,МЭЭ,ЭКМП (ТО МП)', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.SANK_MEK_MEE_EKMP ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            }},
+            { accessorKey: 'SUMMAP_tf', header: 'Сумма принята к оплате (ТС)', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.SUMMAP_tf ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            }},
+            { accessorKey: 'SANK_MEK_tf', header: 'Санкции МЭК (ТС)', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.SANK_MEK_tf ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            }},
+            { accessorKey: 'SANK_MEE_EKMP', header: 'Санкции МЭЭ,ЭКМП (ТС)', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.SANK_MEE_EKMP ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            } },
+            { accessorKey: 'sum_schopl', header: 'Сумма оплаченная по бух', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.sum_schopl ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            } },
+            { accessorKey: 'sum_schvzvr', header: 'Сумма возврата по бух', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.sum_schvzvr ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            } },
+            { accessorKey: 'sum_itogo', header: 'Сумма оплаченная по бух. с учетом возврата', Footer: ({ table }) => {
+                const allRows = table.getPrePaginationRowModel().rows;
+                const total = allRows.reduce((sum, row) => sum + (row.original.sum_itogo ?? 0), 0);
+                const formatted = total.toLocaleString('ru-RU');
+                return `Итог = ${formatted}`;
+            } },
             { accessorKey: 'FILENAME_A', header: 'Наименование файла А' },
             { accessorKey: 'DATE_ACT', header: 'Дата заключения ТФОМС' },
             { accessorKey: 'NUM_ACT', header: 'Номер заключения ТФОМС' },
@@ -123,50 +186,62 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
             { accessorKey: 'AFerror', header: 'Наименование ошибки АК/ФК' },
             { accessorKey: 'idSCHET', header: 'идентификатор счета ТФОМС ' },
             { accessorKey: 'idSCHETStatus', header: 'идентификатор загруженного архива ' },
-            { accessorKey: 'ERRORcontrol', header: 'Ошибка при загрузке файла' },
+            { accessorKey: 'ERRORcontrol', header: 'Ошибка при загрузке файла'},
           ], []
     );
 
-    const table = useMantineReactTable({
-        columns,
-        data,
-        enableColumnActions: true,
-        enableColumnFilters: true,
-        enableSorting: true,
-        // enableStickyHeader: true,
-        mantineTableProps: {
-            withColumnBorders: true,
-        },
-        mantineTableBodyRowProps: ({ row }) => ({
-            onContextMenu: (event) => { 
-                event.preventDefault();
-                setSelectedRow(row);
-                setActiveRow(row);
-              },
-              onClick: () => {
-                setActiveRow(null);
-              }
-        }),
-        mantineTableBodyCellProps: ({ row }) => {
-            const isActive = activeRow?.id === row.id;
-            return {
-              style: {
-                backgroundColor: isActive ? '#dee2e6' : 'inherit',
-              },
-            };
-        },
-        initialState: {
-            pagination: {
-                pageIndex: 0,
-                pageSize: 10,
-            },
-        },
-        renderTopToolbarCustomActions: () => (
-            <>
-            <Button variant='default' leftIcon={<FcPrint />} onClick={exportExcel}>Сохранить в Excel</Button>
-            </>
-        )
-      });
+    const headerColors: any = {
+        YEAR: '#b2eefc',
+        MONTH: '#b2eefc',
+        NSCHET: '#b2eefc',
+        DSCHET: '#b2eefc',
+        SD_Z: '#b2eefc',
+        SUMMAV: '#b2eefc',
+        SUMMAP: '#b2eefc',
+        SANK_MEK_MEE_EKMP: '#b2eefc',
+
+        SD_Zopl: '#b9faab',
+        SD_Zerror: '#b9faab',
+        SUMMAP_tf: '#b9faab',
+        SANK_MEK_tf: '#b9faab',
+        SANK_MEE_EKMP: '#b9faab',
+        DATE_ACT: '#b9faab',
+        NUM_ACT: '#b9faab',
+
+        sum_schopl: "#fdc3ff",
+        sum_schvzvr: "#fdc3ff",
+        sum_itogo: "#fdc3ff",
+    };
+
+    const headCell = ({ column }: { column: any }) => ({
+        style: {
+          backgroundColor: headerColors[column.id] || '#f5f5f5',
+        }
+    });
+    const bodyCell = ({ row }: { row: any }) => {
+        const isActive = activeRow?.id === row.id;
+        const errorValue: boolean = row.original.ERRORcontrol == 1;
+        return {
+          style: {
+            backgroundColor: isActive ? '#dee2e6' : (errorValue ? '#ed7777' : 'inherit'),
+          },
+        };
+    };
+    const bodyRow = ({ row }: {row: any}) => ({
+        onContextMenu: (event: any) => { 
+            event.preventDefault();
+            setSelectedRow(row);
+            setActiveRow(row);
+          },
+          onClick: () => {
+            setActiveRow(null);
+          }
+    });
+    const topToolbar = () => (
+        <>
+        <Button variant='default' leftIcon={<FcPrint />} onClick={exportExcel}>Сохранить в Excel</Button>
+        </>
+    );
 
     //start Context menu onClick
     const DeleteSelectedRow = useCallback(async(idSCHETStatus: number) => {
@@ -210,7 +285,7 @@ const MtrSchetResultView: React.FC<MtrSchetResultViewProps> = ({ typeIST }) => {
             </div>
             <div ref={contentRef}>
                 <Loader visible={loaderVisible} />
-                <MantineReactTable table={table} />
+                <Table columns={columns} data={data} pageSize={100} containerHeight={70} headCellProps={headCell} bodyCellProps={bodyCell} bodyRowProps={bodyRow} topToolbarCustomActions={topToolbar} />
             </div>
             <SegmentDetailWindow visible={segmentVisible} onClose={() => setSegmentVisible(false)} data={segmentData}/>
         </>

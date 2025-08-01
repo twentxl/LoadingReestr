@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
+import React, { useState, useEffect, useMemo } from 'react';
+import { type MRT_ColumnDef } from 'mantine-react-table';
+import Table from '../../../components/Table/Table';
 import { getScheta, type getSchetaProps } from '../../../api/PlatezhkiDetailApi';
 import { Title } from '@mantine/core';
 
@@ -47,23 +48,16 @@ const SchetaGrid: React.FC<SchetaProps> = ({ idBUOP, onSelectRow }) => {
         { accessorKey:"idSCHETStatus", header:"idSCHETStatus"},
     ], []);
 
-    const table = useMantineReactTable({
-        columns,
-        data,
-        enableColumnActions: true,
-        enableColumnFilters: true,
-        enableSorting: true,
-        // enableStickyHeader: true,
-        mantineTableProps: {
-            withColumnBorders: true,
-        },
-        initialState: {
-            pagination: {
-                pageIndex: 0,
-                pageSize: 3,
-            },
-        },
+    const headCell = () => ({
+        style: {
+            backgroundColor: '#f5f5f5',
+        }
     });
+    const bodyCell:any = {
+        style: {
+            backgroundColor: 'inherit',
+        }
+    };
 
     useEffect(() => {
         fetchData();
@@ -72,7 +66,7 @@ const SchetaGrid: React.FC<SchetaProps> = ({ idBUOP, onSelectRow }) => {
     return (
         <>
         <Title order={4}>Счет терр.страх</Title>
-        <MantineReactTable table={table} />
+        <Table columns={columns} data={data} pageSize={3} containerHeight={20} headCellProps={headCell} bodyCellProps={bodyCell} />
         </>
     )
 };

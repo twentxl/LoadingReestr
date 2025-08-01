@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
+import { type MRT_ColumnDef } from 'mantine-react-table';
+import Table from '../../../components/Table/Table';
 import { getPlatPorGrid, ExportExcel_PlatPorGrid, type getPlatPorGridProps } from '../../../api/PlatezhkiDetailApi';
 import { Button, Title } from '@mantine/core';
 import { FcPrint } from 'react-icons/fc';
@@ -79,47 +80,42 @@ const PlatPorGrid: React.FC<PlatPorGridProps> = ({ typeIST, onSelectIdBUOP, onSe
         { accessorKey:"idBUOP_PL_SCH", header:"id idBUOP_PL_SCH"},
     ], []);
 
-    const table = useMantineReactTable({
-        columns,
-        data,
-        enableColumnActions: true,
-        enableColumnFilters: true,
-        enableSorting: true,
-        mantineTableProps: {
-            withColumnBorders: true,
-        },
-        mantineTableBodyRowProps: ({ row }) => ({
-            onClick: () => {
-                if(onSelectIdBUOP) { onSelectIdBUOP(row.original.idBUOP_PL_SCH); }
-                if(onSelectRow) { onSelectRow(row) }
-                setSelectedRow(row);
-            }
-        }),
-        mantineTableBodyCellProps: ({ row }) => {
-            const isActive = activeRow?.id === row.id;
-            return {
-              style: {
-                backgroundColor: isActive ? '#dee2e6' : 'inherit',
-              },
-            };
-        },
-        initialState: {
-            pagination: {
-                pageIndex: 0,
-                pageSize: 10,
+    const bodyCell = ({ row }: {row: any}) => {
+        const isActive = activeRow?.id === row.id;
+        return {
+            style: {
+            backgroundColor: isActive ? '#dee2e6' : 'inherit',
             },
-        },
-        renderTopToolbarCustomActions: () => (
-            <>
-            <Button variant='default' leftIcon={<FcPrint />} onClick={exportExcel}>Сохранить в Excel</Button>
-            </>
-        )
+        };
+    };
+    const headCell = () => ({
+        style: {
+            backgroundColor: '#f5f5f5',
+        }
     });
-
+    const bodyRow = ({ row }: {row: any}) => ({
+        onClick: () => {
+            if(onSelectIdBUOP) { onSelectIdBUOP(row.original.idBUOP_PL_SCH); }
+            if(onSelectRow) { onSelectRow(row) }
+            setSelectedRow(row);
+        }
+    });
+    const topToolbar = () => (
+        <>
+        <Button variant='default' leftIcon={<FcPrint />} onClick={exportExcel}>Сохранить в Excel</Button>
+        </>
+    );
     return (
         <>
         <Title order={4}>Плат.пор</Title>
-        <MantineReactTable table={table} />
+        <Table columns={columns} 
+                data={data} 
+                pageSize={10} 
+                containerHeight={64} 
+                bodyCellProps={bodyCell} 
+                headCellProps={headCell} 
+                bodyRowProps={bodyRow} 
+                topToolbarCustomActions={topToolbar}/>
         </>
     )
 };

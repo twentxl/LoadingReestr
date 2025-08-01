@@ -88,10 +88,29 @@ const ResultNSIView = () => {
         enableColumnActions: true,
         enableColumnFilters: true,
         enableSorting: true,
-        //enableStickyHeader: true,
+        enableStickyHeader: true,
+        mantineTableContainerProps: {
+            style: {
+                height: '65vh',
+                maxHeight: '65vh',
+                overflowY: 'auto'
+            }
+        },
+        
         mantineTableProps: {
             withColumnBorders: true,
+            sx: {
+                'thead > tr': { backgroundColor: 'd8d8d8', },
+                'thead > tr > th': { backgroundColor: 'd8d8d8', },
+                'tbody > tr > td': { backgroundColor: 'd8d8d8', },
+            },
         },
+        mantineTableHeadCellProps: () => ({
+            style: {
+              backgroundColor: '#f5f5f5',
+            }
+        }),
+
         mantineTableBodyRowProps: ({ row }) => ({
             onContextMenu: (event) => { 
                 event.preventDefault();

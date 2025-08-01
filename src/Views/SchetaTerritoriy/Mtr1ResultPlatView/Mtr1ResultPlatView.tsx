@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
+import { type MRT_ColumnDef } from 'mantine-react-table';
+import Table from '../../../components/Table/Table';
 import Mtr1ResultPlatSearch from './Mtr1ResultPlatSearch';
 import { Mtr1ResultPlat, ExportExcel, type Mtr1ResultPlatProps } from '../../../api/Mtr1ResultPlatApi';
 import { formatDateTime } from '../../../helper/formatting';
@@ -86,35 +87,25 @@ const Mtr1ResultPlatView: React.FC<Mtr1ResultPlatViewProps> = ({ typeIST }) => {
     useEffect(() => {
         if(contentRef.current) { contentRef.current.style.display = "none" }
     }, [])
-
-    const table = useMantineReactTable({
-        columns,
-        data,
-        enableColumnActions: true,
-        enableColumnFilters: true,
-        enableSorting: true,
-        mantineTableProps: {
-            withColumnBorders: true,
-        },
-        initialState: {
-            pagination: {
-                pageIndex: 0,
-                pageSize: 10,
-            },
-        },
-        renderTopToolbarCustomActions: () => (
-            <>
+    
+    const bodyCell: any = {
+        style: { backgroundColor: 'inherit' }
+    };
+    const headCell = () => {
+        style: { backgroundColor: '#f5f5f5' }
+    };
+    const topToolbar = () => (
+        <>
             <Button variant='default' leftIcon={<FcPrint />} onClick={exportExcel}>Сохранить в Excel</Button>
-            </>
-        )
-    })
+        </>
+    );
 
     return (
         <>
         <div><Mtr1ResultPlatSearch onClick={resultClick} /></div>
         <div ref={contentRef}>
             <Loader visible={loaderVisible} />
-            <MantineReactTable table={table} />
+            <Table columns={columns} data={data} pageSize={10} containerHeight={65} headCellProps={headCell} bodyCellProps={bodyCell} topToolbarCustomActions={topToolbar}/>
         </div>
         </>
     )

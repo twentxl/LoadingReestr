@@ -21,11 +21,29 @@ const SegmentDetailWindow: React.FC<SegmentDetailWindowProps> = ({ visible, onCl
         enableColumnFilters: false,
         enablePagination: false,
         enableSorting: false,
+        mantineTableProps: {
+            withColumnBorders: true,
+            sx: {
+                'thead > tr': { backgroundColor: '#d8d8d8', },
+                'thead > tr > th': { backgroundColor: '#d8d8d8', },
+                'tbody > tr > td': { backgroundColor: '#d8d8d8', },
+            },
+        },
+        mantineTableHeadCellProps: () => ({
+            style: {
+              backgroundColor: '#f5f5f5',
+            }
+        }),
+        mantineTableBodyCellProps: {
+            style: {
+                backgroundColor: 'inherit',
+            },
+        },
     });
 
     return (
         <Popup title="Развернутая информация" visible={visible} onClose={onClose}>
-            <div style={{ height: '500px', maxWidth: '800px', overflow: 'auto' }}>
+            <div style={{ height: '500px', width: '800px', overflow: 'auto' }}>
                 <MantineReactTable table={table} />
             </div>
         </Popup>

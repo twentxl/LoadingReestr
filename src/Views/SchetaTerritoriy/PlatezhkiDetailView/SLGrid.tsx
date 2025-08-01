@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { MantineReactTable, useMantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
+import { type MRT_ColumnDef } from 'mantine-react-table';
+import Table from '../../../components/Table/Table';
 import { getSL } from '../../../api/PlatezhkiDetailApi';
 import { Title } from '@mantine/core';
 
@@ -23,7 +24,7 @@ const SLGrid: React.FC<SLGridProps> = ({ idBUOP }) => {
         { accessorKey: 'N_ZAP', header: 'N_ZAP', size: 50},
         { accessorKey: 'IDCASE', header: 'IDCASE', size: 50},
         { accessorKey: 'VPOLIS', header: 'Тип документа, подтверждающего факт страхования по ОМС'},
-        { accessorKey: 'ENP', header: 'Номер/Серия/ЕНП документа, подтверждающего факт страхования по ОМС'},
+        { accessorKey: 'ENP', header: 'Номер/Серия/ЕНП документа, подтверждающего факт страхования по ОМС',},
         { accessorKey: 'FAM', header: 'Фамилия'},
         { accessorKey: 'IM', header: 'Имя'},
         { accessorKey: 'OT', header: 'Отчество'},
@@ -43,28 +44,21 @@ const SLGrid: React.FC<SLGridProps> = ({ idBUOP }) => {
         { accessorKey: 'COMENTSL', header: 'Комментарий (терр. страхования)'}, 
         { accessorKey: 'subname', header: 'Регион страхования'},
     ], []);
-
-    const table = useMantineReactTable({
-        columns,
-        data,
-        enableColumnActions: true,
-        enableColumnFilters: true,
-        enableSorting: true,
-        mantineTableProps: {
-            withColumnBorders: true,
-        },
-        initialState: {
-            pagination: {
-                pageIndex: 0,
-                pageSize: 3,
-            },
-        },
+    const headCell = () => ({
+        style: {
+            backgroundColor: '#f5f5f5',
+        }
     });
+    const bodyCell: any = {
+        style: {
+            backgroundColor: 'inherit',
+        }
+    };
 
     return (
         <>
         <Title order={4}>Случаи</Title>
-        <MantineReactTable table={table}/>
+        <Table columns={columns} data={data} pageSize={3} containerHeight={30} headCellProps={headCell} bodyCellProps={bodyCell}/>
         </>
     )
 };

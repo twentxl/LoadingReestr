@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import style from "./Header.module.css";
 import HeaderButton, { HeaderSubButton, HeaderSubItem, HeaderSubItemNavigate} from '../ui/HeaderButton/HeaderButton';
-import { FcInfo, FcBullish, FcViewDetails, FcAnswers } from 'react-icons/fc';
+import { FcInfo, FcBullish, FcViewDetails, FcAnswers, FcTemplate  } from 'react-icons/fc';
 
 import ResultNSIView from '../../Views/NSI/ResultNSIView/ResultNSIView';
 import CardMOView from '../../Views/CardMO/CardMOView';
@@ -38,10 +38,10 @@ const Header: React.FC<HeaderProps> = ({ addTab }) => {
         addTab("МТР1, счета по МО", <ResultMtrSchetView />);
     }
     const Mtr1SchetLink = () => {
-        addTab("МТР1 Счета на терр-рию", <MtrSchetResultView typeIST={3} />);
+        addTab("МТР1 Счета на терр-рию", <MtrSchetResultView typeIST={2} />);
     }
     const Mtr2SchetLink = () => {
-        addTab("МТР2 Счета на терр-рию", <MtrSchetResultView typeIST={2} />);
+        addTab("МТР2 Счета на терр-рию", <MtrSchetResultView typeIST={3} />);
     }
     const Mtr1ResultPlatLink = () => {
         addTab("Мтр1, Сведения о плат. поручениях", <Mtr1ResultPlatView typeIST={2} />)
@@ -113,6 +113,11 @@ const Header: React.FC<HeaderProps> = ({ addTab }) => {
                         <HeaderSubItem text="Сведения о файлах xml от бух-рии" onClick={Mtr2SvedFileXmlPPLink}/>
                     </HeaderSubItemNavigate>
                 </HeaderSubItemNavigate>
+            </HeaderSubButton>
+
+            <HeaderSubButton text="ФЕРЗЛ/ЕРЗ" icon={FcTemplate}>
+                <HeaderSubItem text="Сведения изи ФЕРЗЛ"/>
+                <HeaderSubItem text="Прикрепление иногородних"/>
             </HeaderSubButton>
         </header>
 
